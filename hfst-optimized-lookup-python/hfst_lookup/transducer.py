@@ -170,6 +170,10 @@ class Transducer:
         for x in self.displayVector:
             print '\t' + x[0].encode("utf-8") + '\t' + str(x[1])
 
+    def getMorphemes(self):
+        for x in self.displayVector:
+            yield x[0].encode("utf-8") + '\t' + str(x[1]) + '\n'
+
 class TransducerW(Transducer):
 
     class TransitionIndex(Transducer.TransitionIndex):

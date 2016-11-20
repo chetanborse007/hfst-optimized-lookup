@@ -27,14 +27,20 @@ class OlTransducer:
             return []
         
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Usage: python HfstRuntimeReader FILE"
+    if len(sys.argv) != 4:
+        print "Usage: python HfstRuntimeReader <TRANSDUCER FILE> <INPUT> <OUTPUT>"
         sys.exit()
+
     transducerfile = open(sys.argv[1], "rb")
+    input = open(sys.argv[2], "r")
+    output = open(sys.argv[3], "w")
+
     header = Header(transducerfile)
     print "header read"
+
     alphabet = Alphabet(transducerfile, header.number_of_symbols)
     print "alphabet read"
+
     if header.weighted:
         transducer = TransducerW(transducerfile, header, alphabet)
     else:
@@ -42,15 +48,36 @@ if __name__ == "__main__":
     print "transducer ready"
     print
 
+    try:
+        for line in input:
+            words = map(lambda x: x.strip(), line.split())
+            words = filter(None, words)
+
+            for word in words:
+                if word.isalpha() and transducer.analyze(word):
+                    print word
+                    for morpheme in transducer.getMorphemes():
+                        output.write(morpheme)
+                        print '\t' + morpheme
+                    print
+                else:
+                    # tokenization failed
+                    pass
+    except IOError, e:
+        print e
+        sys.exit(1)
+
+    '''
     while True:
         try:
             string = raw_input()
         except EOFError:
             sys.exit(0)
-        print string + ":"
+        #print string + ":"
         if transducer.analyze(string):
             transducer.printAnalyses()
             print
         else:
             # tokenization failed
             pass
+    '''
