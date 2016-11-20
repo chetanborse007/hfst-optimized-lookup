@@ -104,7 +104,7 @@ class LetterTrie:
                 return self.symbols[current]
             temp = self.children[current].find(indexstring)
             if temp == NO_SYMBOL_NUMBER:
-                if not (current in symbols):
+                if not (current in self.symbols):
                     indexstring.pos -= 1
                     return NO_SYMBOL_NUMBER
                 return self.symbols[current]
